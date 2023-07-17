@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">StarWarsSample</string>
+    <string name="home_appbar_label">Starships</string>
+    <string name="home_content_loading">Loading…</string>
+    <string name="home_label_starship">Starships</string>
+    <string name="home_label_list_empty">No starship found</string>
+    <string name="home_card_model">Model:</string>
+    <string name="home_card_price">Price:</string>
+    <string name="home_card_price_unknown">\?</string>
 </resources>
