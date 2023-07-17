@@ -18,7 +18,7 @@ class HomeViewModel @Inject constructor(
 ): ViewModel() {
     private var uiState: MutableState<HomeScreenState> = mutableStateOf(HomeScreenState.Loading)
 
-    fun getUiState(): State<HomeScreenState>{
+    private fun refreshUiData() {
         viewModelScope.launch {
             starshipRepository.getStarships().collectLatest {
                 uiState.value = HomeScreenState.Ready(
@@ -26,7 +26,10 @@ class HomeViewModel @Inject constructor(
                 )
             }
         }
+    }
 
+    fun getUiState(): State<HomeScreenState>{
+        refreshUiData()
         return uiState
     }
 }

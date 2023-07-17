@@ -7,4 +7,9 @@
     <string name="home_card_model">Model:</string>
     <string name="home_card_price">Price:</string>
     <string name="home_card_price_unknown">\?</string>
+    <string name="detail_model_label">Model</string>
+    <string name="detail_manufacturer_label">Manufacturer</string>
+    <string name="detail_cost_label">Price</string>
+    <string name="detail_atmospeed_label">Max athmospheric speed</string>
+    <string name="detail_class_label">Class</string>
 </resources>

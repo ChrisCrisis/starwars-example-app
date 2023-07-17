@@ -8,6 +8,7 @@ import javax.inject.Inject
 
 interface StarshipRepository {
     fun getStarships(): Flow<List<Starship>>
+    fun getStarshipBy(shipId: String): Flow<Starship>
 }
 
 class StarshipRepositoryImpl @Inject constructor(
@@ -17,6 +18,12 @@ class StarshipRepositoryImpl @Inject constructor(
     override fun getStarships(): Flow<List<Starship>> {
         return flow {
             emit(remoteSource.getAllStarships())
+        }
+    }
+
+    override fun getStarshipBy(shipId: String): Flow<Starship> {
+        return flow {
+            emit(remoteSource.getStarshipBy(shipId))
         }
     }
 }

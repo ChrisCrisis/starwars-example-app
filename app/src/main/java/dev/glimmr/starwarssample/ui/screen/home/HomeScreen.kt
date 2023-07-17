@@ -1,12 +1,13 @@
 package dev.glimmr.starwarssample.ui.screen.home
 
+import StarWarsLoadingIndicator
 import android.annotation.SuppressLint
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -34,16 +34,19 @@ import dev.glimmr.starwarssample.ui.theme.extension.cardTitle
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    onShipClicked: (String) -> Unit
 ) {
     HomeScreenContent(
-        homeScreenState = viewModel.getUiState()
+        homeScreenState = viewModel.getUiState(),
+        onShipClicked = onShipClicked,
     )
 }
 
 @Composable
 fun HomeScreenContent(
-    homeScreenState: State<HomeScreenState>
+    homeScreenState: State<HomeScreenState>,
+    onShipClicked: (String) -> Unit
 ) {
     val uiState = homeScreenState.value
     Scaffold (
@@ -52,20 +55,12 @@ fun HomeScreenContent(
         }
     ){ paddingValues ->
         when(uiState) {
-            is HomeScreenState.Loading -> Column(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                //TODO
-                // not implemented for simplicity
-                // replace with proper loading indicator
-                Text(text = stringResource(id = R.string.home_content_loading))
-            }
+            is HomeScreenState.Loading -> StarWarsLoadingIndicator(
+                modifier = Modifier.padding(paddingValues)
+            )
             is HomeScreenState.Ready -> StarshipList(
                 starships = uiState.starships,
+                onShipClicked = onShipClicked,
                 modifier = Modifier
                     .padding(paddingValues)
                     .fillMaxWidth()
@@ -78,6 +73,7 @@ fun HomeScreenContent(
 fun StarshipList(
     starships: List<Starship>,
     modifier: Modifier = Modifier,
+    onShipClicked: (String) -> Unit,
 ) {
     if(starships.isEmpty()){
         NoShipFoundCard(modifier = modifier)
@@ -95,7 +91,12 @@ fun StarshipList(
                 )
             }
             items(starships) {starship ->
-                StarshipCard(ship = starship)
+                StarshipCard(
+                    ship = starship,
+                    modifier = Modifier.clickable {
+                        onShipClicked.invoke(starship.id)
+                    }
+                )
             }
         }
     }
@@ -158,7 +159,7 @@ fun StarshipCard(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = ship.cost_in_credits ?: stringResource(id = R.string.home_card_price_unknown),
+                    text = ship.cost,
                 )
             }
         }
@@ -176,7 +177,8 @@ fun HomeScreenContentPreviewEmpty() {
                 HomeScreenState.Ready(
                     starships = emptyList()
                 )
-            )
+            ),
+            onShipClicked = { }
         )
     }
 }
@@ -191,6 +193,7 @@ fun HomeScreenContentPreview() {
                 HomeScreenState.Ready(
                     starships = List(size = 5){
                         Starship(
+                            "4",
                             "TestShip $it",
                             "TestModel",
                             "",
@@ -200,7 +203,8 @@ fun HomeScreenContentPreview() {
                         )
                     }
                 )
-            )
+            ),
+            onShipClicked = {}
         )
     }
 }
@@ -211,7 +215,8 @@ fun HomeScreenContentPreview() {
 fun HomeScreenContentPreviewLoading() {
     StarWarsSampleTheme {
         HomeScreenContent(
-            homeScreenState = mutableStateOf(HomeScreenState.Loading)
+            homeScreenState = mutableStateOf(HomeScreenState.Loading),
+            onShipClicked = {}
         )
     }
 }
