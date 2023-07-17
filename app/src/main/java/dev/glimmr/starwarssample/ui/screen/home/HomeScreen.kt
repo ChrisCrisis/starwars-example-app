@@ -16,6 +16,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -59,14 +60,37 @@ fun StarshipList(
     starships: List<Starship>,
     modifier: Modifier = Modifier,
 ) {
-    LazyColumn (
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        contentPadding = PaddingValues(all = 16.dp),
-        modifier = modifier
-    ){
-        items(starships) {starship ->
-            StarshipCard(ship = starship)
+    if(starships.isEmpty()){
+        NoShipFoundCard()
+    } else {
+        LazyColumn (
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(all = 16.dp),
+            modifier = modifier
+        ){
+            items(starships) {starship ->
+                StarshipCard(ship = starship)
+            }
         }
+    }
+}
+
+@Composable
+fun NoShipFoundCard(
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(all = 16.dp)
+    )  {
+        Text(
+            text = "No starship found",
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(all = 16.dp)
+        )
     }
 }
 

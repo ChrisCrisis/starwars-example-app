@@ -5,31 +5,26 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.glimmr.starwarssample.data.model.Starship
-import kotlinx.coroutines.delay
+import dev.glimmr.starwarssample.data.repository.StarshipRepository
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HomeViewModel: ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val starshipRepository: StarshipRepository,
+): ViewModel() {
     private var uiState: MutableState<HomeScreenState> = mutableStateOf(HomeScreenState.Loading)
 
     fun getUiState(): State<HomeScreenState>{
         viewModelScope.launch {
-            delay(5000)
-            val newState = HomeScreenState.Ready(
-                List(size = 100){
-                    (
-                        Starship(
-                            "TestName $it",
-                            "",
-                            "",
-                            "",
-                            "",
-                            "",
-                        )
-                    )
-                }
-            )
-            uiState.value = newState
+            starshipRepository.getStarships().collectLatest {
+                uiState.value = HomeScreenState.Ready(
+                    starships = it
+                )
+            }
         }
 
         return uiState
