@@ -8,6 +8,8 @@ import dev.glimmr.starwarssample.data.repository.StarshipRepository
 import dev.glimmr.starwarssample.data.repository.StarshipRepositoryImpl
 import dev.glimmr.starwarssample.data.source.StarWarsApiRemoteSource
 import dev.glimmr.starwarssample.data.source.StarWarsApiRemoteSourceImpl
+import dev.glimmr.starwarssample.data.source.StarshipLocalSource
+import dev.glimmr.starwarssample.data.source.StarshipLocalSourceImpl
 
 @InstallIn(ViewModelComponent::class)
 @Module
@@ -17,4 +19,7 @@ abstract class StarshipModule {
 
     @Binds
     abstract fun getStarWarsRemoteSource(source: StarWarsApiRemoteSourceImpl): StarWarsApiRemoteSource
+
+    @Binds
+    abstract fun getStarWarsLocalSource(source: StarshipLocalSourceImpl): StarshipLocalSource
 }

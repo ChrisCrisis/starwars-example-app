@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.glimmr.starwarssample.data.model.Starship
 import dev.glimmr.starwarssample.data.repository.StarshipRepository
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,7 +19,7 @@ class HomeViewModel @Inject constructor(
 
     private fun refreshUiData() {
         viewModelScope.launch {
-            starshipRepository.getStarships().collectLatest {
+            starshipRepository.getStarships().collect {
                 uiState.value = HomeScreenState.Ready(
                     starships = it
                 )

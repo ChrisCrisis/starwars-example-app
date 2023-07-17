@@ -2,8 +2,11 @@ package dev.glimmr.starwarssample.data.repository
 
 import dev.glimmr.starwarssample.data.model.Starship
 import dev.glimmr.starwarssample.data.source.StarWarsApiRemoteSource
+import dev.glimmr.starwarssample.data.source.StarshipLocalSource
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 interface StarshipRepository {
@@ -12,18 +15,23 @@ interface StarshipRepository {
 }
 
 class StarshipRepositoryImpl @Inject constructor(
-    private val remoteSource: StarWarsApiRemoteSource
+    private val remoteSource: StarWarsApiRemoteSource,
+    private val localSource: StarshipLocalSource,
 ): StarshipRepository {
-
     override fun getStarships(): Flow<List<Starship>> {
-        return flow {
-            emit(remoteSource.getAllStarships())
+        CoroutineScope(Dispatchers.IO).launch {
+            val data = remoteSource.getAllStarships()
+            localSource.storeShips(data)
         }
+
+        return localSource.getAllStarships()
     }
 
     override fun getStarshipBy(shipId: String): Flow<Starship> {
-        return flow {
-            emit(remoteSource.getStarshipBy(shipId))
+        CoroutineScope(Dispatchers.IO).launch {
+            val data = remoteSource.getStarshipBy(shipId)
+            localSource.storeShip(data)
         }
+        return localSource.getStarshipBy(shipId)
     }
 }
