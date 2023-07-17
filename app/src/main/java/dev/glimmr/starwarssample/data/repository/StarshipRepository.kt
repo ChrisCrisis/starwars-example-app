@@ -16,7 +16,6 @@ class StarshipRepositoryImpl @Inject constructor(
 
     override fun getStarships(): Flow<List<Starship>> {
         return flow {
-            emit(emptyList())
             emit(remoteSource.getAllStarships())
         }
     }

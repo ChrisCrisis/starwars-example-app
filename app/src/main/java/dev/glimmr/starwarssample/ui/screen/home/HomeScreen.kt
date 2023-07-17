@@ -100,12 +100,18 @@ fun StarshipCard(
     modifier: Modifier =  Modifier
 ) {
     Card(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
     ) {
-        Text(text = ship.name)
-        Text(text = ship.model)
-        Text(text = ship.starshipClass)
-        Text(text = ship.manufacturer)
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+        ) {
+            Text(text = ship.name)
+            Text(text = ship.model)
+            Text(text = ship.starshipClass ?: "")
+            Text(text = ship.manufacturer)
+        }
     }
 }
 

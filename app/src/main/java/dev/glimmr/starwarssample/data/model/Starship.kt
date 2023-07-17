@@ -6,5 +6,5 @@ data class Starship(
     val manufacturer: String,
     val purchaseCost: String, //TODO change to Double o. int
     val maxAtmosphericSpeed: String,
-    val starshipClass: String,
+    val starshipClass: String?,
 )
